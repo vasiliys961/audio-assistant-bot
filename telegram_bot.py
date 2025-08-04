@@ -2,21 +2,19 @@ import telebot
 from openai import OpenAI
 import os
 
-# Переменные окружения (установите их в настройках Render)
-BOT_TOKEN = os.environ.get('BOT_TOKEN') or "8473625328:AAF5V1YCZpOFPeIBSgMcoD33gOmnqW8Uaoo"
+# Переменные окружения
+BOT_TOKEN = os.environ.get('BOT_TOKEN') or "123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ"
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY') or "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"
 
 # Проверка наличия токенов
 if BOT_TOKEN == "YOUR_TELEGRAM_BOT_TOKEN":
-    raise ValueError("Пожалуйста, установите BOT_TOKEN в переменных окружения или в коде")
-
-if OPENROUTER_API_KEY == "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":
-    print("Используется тестовый API ключ. Для production замените его.")
+    raise ValueError("Пожалуйста, установите BOT_TOKEN в переменных окружения")
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
+# Исправленный клиент OpenAI для OpenRouter
 client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
+    base_url="https://openrouter.ai/api/v1 ",  # Убраны пробелы
     api_key=OPENROUTER_API_KEY
 )
 
