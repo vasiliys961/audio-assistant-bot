@@ -1,0 +1,73 @@
+import telebot
+from openai import OpenAI
+import os
+
+# Переменные окружения (установите их в настройках Render)
+BOT_TOKEN = os.environ.get('BOT_TOKEN') or "8473625328:AAF5V1YCZpOFPeIBSgMcoD33gOmnqW8Uaoo"
+OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY') or "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"
+
+# Проверка наличия токенов
+if BOT_TOKEN == "YOUR_TELEGRAM_BOT_TOKEN":
+    raise ValueError("Пожалуйста, установите BOT_TOKEN в переменных окружения или в коде")
+
+if OPENROUTER_API_KEY == "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":
+    print("Используется тестовый API ключ. Для production замените его.")
+
+bot = telebot.TeleBot(BOT_TOKEN)
+
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=OPENROUTER_API_KEY
+)
+
+@bot.message_handler(commands=['start', 'help'])
+def send_welcome(message):
+    welcome_text = """
+🎙️ *Аудио помощник*
+
+Я могу анализировать текст разговоров и делать резюме!
+
+📝 *Как использовать:*
+1. Запиши голосовое сообщение в Telegram (он автоматически преобразуется в текст)
+2. Или отправь мне текст разговора
+3. Я создам краткое резюме через GPT
+
+💰 *Стоимость:* около 1-2 рублей за сообщение
+    """
+    bot.reply_to(message, welcome_text, parse_mode='Markdown')
+
+@bot.message_handler(content_types=['text'])
+def handle_text(message):
+    try:
+        # Уведомление о начале обработки
+        processing_msg = bot.reply_to(message, "🧠 Создаю резюме...")
+        
+        # Создание резюме через GPT
+        response = client.chat.completions.create(
+            model="openai/gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "Ты помощник, создающий краткие резюме разговоров. Выдели основные темы, решения и действия."},
+                {"role": "user", "content": f"Сделай резюме разговора:\n\n{message.text}"}
+            ],
+            max_tokens=500,
+            temperature=0.3
+        )
+        
+        summary = response.choices[0].message.content
+        
+        # Отправка результата
+        bot.edit_message_text(f"📋 *РЕЗЮМЕ РАЗГОВОРА:*\n\n{summary}", 
+                            chat_id=processing_msg.chat.id, 
+                            message_id=processing_msg.message_id,
+                            parse_mode='Markdown')
+            
+    except Exception as e:
+        bot.reply_to(message, f"❌ Ошибка обработки: {str(e)}")
+
+if __name__ == '__main__':
+    print("🤖 Бот запущен!")
+    print("Для остановки нажмите Ctrl+C")
+    try:
+        bot.polling(none_stop=True)
+    except KeyboardInterrupt:
+        print("\n👋 Бот остановлен!")
