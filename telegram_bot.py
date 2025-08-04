@@ -3,7 +3,7 @@ from openai import OpenAI
 import os
 
 # Переменные окружения
-BOT_TOKEN = os.environ.get('BOT_TOKEN') or "123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ"
+BOT_TOKEN = os.environ.get('BOT_TOKEN') or "8473625328:AAFjGucDDik25OtNhLhKqzBHJlhsxwXNgD4"
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY') or "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"
 
 # Проверка наличия токенов
