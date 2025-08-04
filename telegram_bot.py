@@ -7,14 +7,15 @@ BOT_TOKEN = os.environ.get('BOT_TOKEN') or "8034117424:AAGka9oDLR5zfwYaHjyfeee1U
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY') or "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"
 
 # Проверка наличия токенов
-if BOT_TOKEN == "YOUR_TELEGRAM_BOT_TOKEN":
-    raise ValueError("Пожалуйста, установите BOT_TOKEN в переменных окружения")
+if BOT_TOKEN == "8034117424:AAGka9oDLR5zfwYaHjyfeee1UqvNrnZHfYY":
+    print("⚠️  Используется тестовый BOT_TOKEN. Для production установите переменную окружения BOT_TOKEN")
 
+# Инициализация бота
 bot = telebot.TeleBot(BOT_TOKEN)
 
 # Исправленный клиент OpenAI для OpenRouter
 client = OpenAI(
-    base_url="https://openrouter.ai/api/v1 ",  # Убраны пробелы
+    base_url="https://openrouter.ai/api/v1",  # Убраны пробелы
     api_key=OPENROUTER_API_KEY
 )
 
